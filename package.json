@@ -2,6 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Authorization Server",
+  "engines": {
+    "node": "14.17.6"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
