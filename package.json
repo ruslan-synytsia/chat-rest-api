@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Authorization Server",
   "engines": {
-    "node": "14.17.6"
+    "node": "20.9.0"
   },
   "main": "index.js",
   "scripts": {
