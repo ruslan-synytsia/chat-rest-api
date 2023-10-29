@@ -109,6 +109,7 @@ class AuthController {
     // Login method
     // ===================================================================================
     async login (req, res) {
+        console.log('req.body', req.body)
         try {
             const { login, password, autoLogin } = req.body;
             const user = await AuthService.findUserByLogin(login);
