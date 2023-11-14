@@ -27,7 +27,15 @@ class UsersController {
         } = await validateTokens(accessToken, null, ACCESS_TOKEN_SECRET, null);
       
         if (accessCheckResult) {
-          const usersList = await UsersService.findUsers();
+          const list = await UsersService.findUsers();
+          const usersList = list.map(user => {
+            return {
+              username: user.username,
+              last_name: user.last_name,
+              login: user.login
+            }
+          });
+          
           return res.status(200).json({
             statusCode: 0,
             message: 'Users list',
