@@ -30,12 +30,13 @@ class UsersController {
           const list = await UsersService.findUsers();
           const usersList = list.map(user => {
             return {
+              _id: user._id,
               username: user.username,
               last_name: user.last_name,
               login: user.login
             }
           });
-          
+
           return res.status(200).json({
             statusCode: 0,
             message: 'Users list',
