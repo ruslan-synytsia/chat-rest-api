@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { name: serviceName, version: serviceVersion } = require('./package.json');
 
 const authRouter = require('./components/routers/authRouter');
 const chatRouter = require('./components/routers/chatRouter');
@@ -30,6 +31,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    service: serviceName,
+    status: 'ok',
+    version: serviceVersion,
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
