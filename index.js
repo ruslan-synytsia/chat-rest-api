@@ -31,6 +31,10 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Connecting to MongoDB database via Mongoose
 // ===================================================================================
 mongoose.connect(process.env.DB_MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
