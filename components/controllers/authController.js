@@ -6,10 +6,10 @@ const AuthService = require('../services/authService');
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-const accessTokenLifetime = 24 * 3600; // 24 hours in seconds
-const refreshTokenLifetime = 30 * 24 * 3600; // 30 days in seconds
-const accessTokenExpirationDate = new Date(Date.now() + accessTokenLifetime);
-const refreshTokenExpirationDate = new Date(Date.now() + refreshTokenLifetime);
+const accessTokenLifetimeSeconds = 24 * 3600; // 24 hours in seconds
+const refreshTokenLifetimeSeconds = 30 * 24 * 3600; // 30 days in seconds
+const accessTokenLifetimeMs = accessTokenLifetimeSeconds * 1000;
+const refreshTokenLifetimeMs = refreshTokenLifetimeSeconds * 1000;
 
 class AuthController {
     // Registration method
@@ -42,7 +42,7 @@ class AuthController {
             const newRefreshToken = jwt.sign(
                 refreshTokenPayload,
                 REFRESH_TOKEN_SECRET,
-                { expiresIn: refreshTokenLifetime }
+                { expiresIn: refreshTokenLifetimeSeconds }
             );
     
             // Creating a user with hashed password and Refresh Token
@@ -67,20 +67,20 @@ class AuthController {
                 const newAccessToken = jwt.sign(
                     accessTokenPayload,
                     ACCESS_TOKEN_SECRET,
-                    { expiresIn: accessTokenLifetime }
+                    { expiresIn: accessTokenLifetimeSeconds }
                 );
     
                 // Saving refreshToken on the client via cookies
                 return response
                     .cookie('accessToken', newAccessToken, {
                         httpOnly: true,
-                        maxAge: accessTokenExpirationDate,
+                        maxAge: accessTokenLifetimeMs,
                         sameSite: 'None',
                         secure: true
                     })
                     .cookie('refreshToken', newRefreshToken, {
                         httpOnly: true,
-                        maxAge: refreshTokenExpirationDate,
+                        maxAge: refreshTokenLifetimeMs,
                         sameSite: 'None',
                         secure: true
                     })
@@ -109,7 +109,6 @@ class AuthController {
     // Login method
     // ===================================================================================
     async login (req, res) {
-        console.log('req.body', req.body)
         try {
             const { login, password, autoLogin } = req.body;
             const user = await AuthService.findUserByLogin(login);
@@ -134,13 +133,13 @@ class AuthController {
             const newAccessToken = jwt.sign(
                 { sub: user.login },
                 ACCESS_TOKEN_SECRET,
-                { expiresIn: accessTokenLifetime }
+                { expiresIn: accessTokenLifetimeSeconds }
             );
     
             const newRefreshToken = jwt.sign(
                 { sub: user.login },
                 REFRESH_TOKEN_SECRET,
-                { expiresIn: refreshTokenLifetime }
+                { expiresIn: refreshTokenLifetimeSeconds }
             );
     
             const response = res.status(201);
@@ -151,13 +150,13 @@ class AuthController {
                 return response
                     .cookie('accessToken', newAccessToken, {
                         httpOnly: true,
-                        maxAge: accessTokenExpirationDate,
+                        maxAge: accessTokenLifetimeMs,
                         sameSite: 'None',
                         secure: true
                     })
                     .cookie('refreshToken', newRefreshToken, {
                         httpOnly: true,
-                        maxAge: refreshTokenExpirationDate,
+                        maxAge: refreshTokenLifetimeMs,
                         sameSite: 'None',
                         secure: true
                     })
@@ -172,7 +171,7 @@ class AuthController {
                 return response
                     .cookie('accessToken', newAccessToken, {
                         httpOnly: true,
-                        maxAge: accessTokenExpirationDate,
+                        maxAge: accessTokenLifetimeMs,
                         sameSite: 'None',
                         secure: true,
                     })

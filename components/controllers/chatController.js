@@ -6,8 +6,8 @@ const ChatService = require('../services/chatService');
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
-const accessTokenLifetime = 24 * 3600; // 24 hours in seconds
-const accessTokenExpirationDate = new Date(Date.now() + accessTokenLifetime);
+const accessTokenLifetimeSeconds = 24 * 3600; // 24 hours in seconds
+const accessTokenLifetimeMs = accessTokenLifetimeSeconds * 1000;
 
 class ChatController {
     async getChatData (req, res) {
@@ -49,12 +49,12 @@ class ChatController {
                 const newAccessToken = jwt.sign(
                   { sub: login },
                   ACCESS_TOKEN_SECRET,
-                  { expiresIn: accessTokenLifetime }
+                  { expiresIn: accessTokenLifetimeSeconds }
                 );
                 return res
                   .cookie('accessToken', newAccessToken, {
                     httpOnly: true,
-                    maxAge: accessTokenExpirationDate,
+                    maxAge: accessTokenLifetimeMs,
                     sameSite: 'None',
                     secure: true
                   })
