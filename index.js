@@ -11,6 +11,14 @@ const usersRouter = require('./components/routers/usersRouter');
 
 const app = express();
 
+const requiredEnv = ['DB_MONGO_URI', 'ACCESS_TOKEN_SECRET', 'REFRESH_TOKEN_SECRET'];
+const missingEnv = requiredEnv.filter((name) => !process.env[name]);
+
+if (missingEnv.length) {
+  console.error(`Missing required env vars: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
 const corsOptions = {
   origin: process.env.CLIENT_URL,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -21,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 // Connecting to MongoDB database via Mongoose
 // ===================================================================================
